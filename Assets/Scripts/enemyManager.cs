@@ -5,6 +5,7 @@ using UnityEngine;
 public class enemyManager : MonoBehaviour
 {
     [SerializeField] LayerMask blockLayer;
+    [SerializeField] GameObject enemyDeath;
     new Rigidbody2D rigidbody;
     float speed;
 
@@ -33,6 +34,7 @@ public class enemyManager : MonoBehaviour
 
     bool IsGround()
     {
+        //鼻先から地面までのY軸線を設定することで崖を認識し反転する
         Vector3 startVec = transform.position + transform.right * 0.5f * transform.localScale.x;
         Vector3 endVec = startVec - transform.up * 0.5f;
         Debug.DrawLine(startVec, endVec);
@@ -72,6 +74,8 @@ public class enemyManager : MonoBehaviour
     }
     public void DestroyEnemy() 
     {
+        //Instantiate = Prefabを発生させる
+        Instantiate(enemyDeath, this.transform.position, this.transform.rotation);
         Destroy(this.gameObject);
     }
 } 

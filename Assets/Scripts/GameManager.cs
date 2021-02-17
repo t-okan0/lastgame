@@ -10,6 +10,9 @@ public class GameManager : MonoBehaviour
     private GameObject gameover;
     private GameObject gameclear;
     private GameObject scoreText;
+    [SerializeField] AudioClip clearSE;
+    [SerializeField] AudioClip overSE;
+    AudioSource audioSource;
     private int score = 0;
 
     public void Start()
@@ -17,18 +20,24 @@ public class GameManager : MonoBehaviour
         this.gameover = GameObject.Find("gameover");
         this.gameclear = GameObject.Find("gameclear");
         this.scoreText = GameObject.Find("scoreText");
+        audioSource = GetComponent<AudioSource>();
     }
+
     public void GameOver()
     {
         this.gameover.GetComponent<Text>().text = "Game Over...";
-        Invoke("RestartScene", 1.5f);      
+        audioSource.PlayOneShot(overSE);
+        Invoke("RestartScene", 3f);
     }
+
     public void GameClear()
     {
         this.gameclear.GetComponent<Text>().text = "Game Clear!";
-        Invoke("RestartScene", 1.5f);
+        audioSource.PlayOneShot(clearSE);
+        Invoke("RestartScene", 3f);
     }
-    public void RestartScene() 
+
+    public void RestartScene()
     {
         Scene thisScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(thisScene.name);
