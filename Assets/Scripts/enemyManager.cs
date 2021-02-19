@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class enemyManager : MonoBehaviour
 {
     [SerializeField] LayerMask blockLayer;
     [SerializeField] GameObject enemyDeath;
     new Rigidbody2D rigidbody;
     float speed;
-
+    public int enemyhp = 2;
 
     public enum DIRECTION_TYPE　// enum = 列挙する
     {
@@ -18,17 +19,27 @@ public class enemyManager : MonoBehaviour
     }
 
     DIRECTION_TYPE direction = DIRECTION_TYPE.RIGHT;
-        
+
     private void Start()
     {
         rigidbody = GetComponent<Rigidbody2D>();
+
     }
 
     private void Update()
     {
-        if (!IsGround()) 
+        if (!IsGround())
         {
-            ChangeDirection(); 
+            ChangeDirection();
+        }
+    }
+    public void OnDamage() 
+    {
+        enemyhp -= 1;
+
+        if (enemyhp == 0) 
+        {
+            DestroyEnemy();
         }
     }
 
@@ -72,10 +83,14 @@ public class enemyManager : MonoBehaviour
         }
         rigidbody.velocity = new Vector2(speed, rigidbody.velocity.y);
     }
+
+   
+    
     public void DestroyEnemy() 
     {
         //Instantiate = Prefabを発生させる
         Instantiate(enemyDeath, this.transform.position, this.transform.rotation);
         Destroy(this.gameObject);
+        
     }
 } 

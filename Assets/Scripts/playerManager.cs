@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class player : MonoBehaviour
+public class playerManager : MonoBehaviour
 {
     [SerializeField] LayerMask blockLayer;
     [SerializeField] GameManager gameManager;
     [SerializeField] AudioClip getItemSE;
     [SerializeField] AudioClip jumpSE;
     [SerializeField] AudioClip stampSE;
+
+    
     AudioSource audioSource;
     BoxCollider2D boxCol;
+    public GameObject bullet;
+    public Transform attackPoint; //bulletを表示する座標の取得(プレイヤ内のattackpointから)
 
     public enum DIRECTION_TYPE　// enum = 列挙する
     {
@@ -56,21 +60,29 @@ public class player : MonoBehaviour
         {
             direction = DIRECTION_TYPE.LEFT;
         }
+
         if (IsGround())
         {
-            if (Input.GetKeyDown("space"))
+            if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 audioSource.PlayOneShot(jumpSE);
                 rigidbody.velocity = new Vector2(0, 6.5f);
             }
-            else
-            {
-                animator.SetBool("Jumping", false);
-            }
            
         }
 
+        if (Input.GetKeyDown(KeyCode.Space)) 
+        {
+            AttackAnimation();
+        }
+
     }
+    private void AttackAnimation() 
+    {
+        animator.SetTrigger("attack");
+        Instantiate(bullet, attackPoint.position, transform.rotation);
+    }
+
     private void FixedUpdate()　//FixedUpdateは定期的に実行される（アップデートをよりなめらかにする？）
     {
         if (isDead) 
