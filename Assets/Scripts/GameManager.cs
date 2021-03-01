@@ -12,70 +12,44 @@ public class GameManager : MonoBehaviour
     [System.NonSerialized] public int currentStageNum = 0; //現在のステージ番号（０始まり）:　NonSerialized =　メンバー変数などがシリアル化されない(機密情報などに使う？)
 
     static public GameManager instance; 
-    private GameObject gameover;
-    private GameObject gameclear;
-    private GameObject scoreText;
-    private GameObject HIGHSCORE;
     public Text highScoreText;
     public string key = "HIGH SCORE";
     public int score = 0;
     public int highScore;
 
-    playerManager pm;
     AudioSource audioSource;
 
     public void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        pm = GetComponent<playerManager>(); 
 
-        gameover = GameObject.Find("gameover");
-        if(gameover == null) 
-        {
-            Debug.Log("gameover null");
-        }
-        else 
-        {
-            Debug.Log("not null");
-        }
-        gameclear = GameObject.Find("gameclear");
-        scoreText = GameObject.Find("scoreText");
-        HIGHSCORE = GameObject.Find("HIGHSCORE");
         //キーにあるハイスコアの読込とstring表示
         highScore = PlayerPrefs.GetInt(key, 0);
-        highScoreText.text = "HIGH SCORE : " + highScore.ToString();
+        GameObject.Find("HIGHSCORE").GetComponent<Text>().text = "HIGH SCORE : " + highScore.ToString();
 
     }
 
     void Update() //ハイスコアの更新
-    {
+    {     
         if (score > highScore)
         {
             highScore = score;
             PlayerPrefs.SetInt(key, highScore);
-            highScoreText.text = "HIGH SCORE : " + highScore.ToString();
+            GameObject.Find("HIGHSCORE").GetComponent<Text>().text = "HIGH SCORE : " + highScore.ToString();
         }
     }
 
     public void GameOver()
     {
-        if (gameover == null)
-        {
-            Debug.Log("gameover null");
-        }
-        else
-        {
-            Debug.Log("not null");
-        }
-
-        gameover.GetComponent<Text>().text = "Game Over...";
+        GameObject.Find("gameover").GetComponent<Text>().text = "Game Over...";
         audioSource.PlayOneShot(overSE);
-        StartCoroutine(Restart());
+        Invoke("RestartScene", 3f);
+        score = 0;
     }
 
     public void GameClear()
     {
-        gameclear.GetComponent<Text>().text = "Game Clear!";
+        GameObject.Find("gameclear").GetComponent<Text>().text = "Game Clear!";
         audioSource.PlayOneShot(clearSE);
         Invoke("NextStage", 3f);
     }
@@ -83,8 +57,8 @@ public class GameManager : MonoBehaviour
     
     public void NextStage()  //次のステージに進む処理
     {
-        currentStageNum += 1;   //コルーチン(停止→再実行)を実行
-        StartCoroutine(WaitForLoadScene());　
+        currentStageNum += 1;   
+        StartCoroutine(WaitForLoadScene());　//コルーチン(停止→再実行)を実行
     }
     
     IEnumerator WaitForLoadScene() //シーンの読み込みと待機を行うコルーチン
@@ -92,25 +66,16 @@ public class GameManager : MonoBehaviour
         yield return SceneManager.LoadSceneAsync(stageName[currentStageNum]); //シーンを非同期で読み込みし、終わるまで待機
                                                                              //LoadSceneAsync = 非同期で読込が終わるまで待機する。他の処理方法で終わる前に次の処理に行くととNullで返される。
     }
-    public void WaitForRestartScene()
+    public void RestartScene()
     {
         Scene thisScene = SceneManager.GetActiveScene(); //GetActiveScene = 現在のシーンを読む
-        Start();
-        SceneManager.LoadScene(thisScene.name);
-        
+        SceneManager.LoadScene(thisScene.name); 
     }
-    IEnumerator Restart() //シーンの読み込みと待機を行うコルーチン
-    {
-         //シーンを非同期で読み込みし、終わるまで待機
-        Scene thisScene = SceneManager.GetActiveScene(); //GetActiveScene = 現在のシーンを読む
-        
-        yield return SceneManager.LoadSceneAsync(thisScene.name);//LoadSceneAsync = 非同期で読込が終わるまで待機する。他の処理方法で終わる前に次の処理に行くととNullで返される。
-        Start();
-    }
+  
     public void AddScore()
     {
         score += 50;
-        scoreText.GetComponent<Text>().text = "SCORE : " + score;
+        GameObject.Find("scoreText").GetComponent<Text>().text = "SCORE : " + score;
     }
     public void Awake()
     {

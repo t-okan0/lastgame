@@ -124,7 +124,7 @@ public class playerManager : MonoBehaviour
 
         if (collision.gameObject.tag == "Finish")
         {
-            gameManager.GameClear();
+            GameManager.instance.GameClear();
         }
 
         if (collision.gameObject.tag == "Item")
@@ -147,7 +147,7 @@ public class playerManager : MonoBehaviour
         boxCol = GetComponent<BoxCollider2D>(); //やられた後どこにも接触しない
         Destroy(boxCol);
         animator.Play("PlayerDeath");
-        gameManager.GameOver();
+        GameManager.instance.GameOver(); //シングルトンとして呼び出す
     }
     
 }

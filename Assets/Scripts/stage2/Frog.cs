@@ -6,10 +6,9 @@ public class Frog : MonoBehaviour
 {
     [SerializeField] LayerMask blockLayer;
     Animator animator;
-    new Rigidbody2D rigidbody;
-    float jumpDown = 0.5f;
+    Rigidbody2D rigidbody;
+    float jumpDown = 1.5f;
     float speed;
-    bool jump = false;
 
     public enum DIRECTION_TYPE　// enum = 列挙する
     {
@@ -22,7 +21,6 @@ public class Frog : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rigidbody = GetComponent<Rigidbody2D>();
-        jump = false;
     }
 
     private void Update()
@@ -32,8 +30,6 @@ public class Frog : MonoBehaviour
             ChangeDirection();
         }
     }
-
-
 
     bool IsGround()
     {
@@ -54,8 +50,6 @@ public class Frog : MonoBehaviour
         {
             direction = DIRECTION_TYPE.RIGHT;
         }
-
-
     }
     private void FixedUpdate()　//FixedUpdateは定期的に実行される（アップデートをよりなめらかにする？）
     {
@@ -79,10 +73,6 @@ public class Frog : MonoBehaviour
         {
             rigidbody.velocity *= jumpDown;
         }
-        
-
-        
-        
     }
 
 }

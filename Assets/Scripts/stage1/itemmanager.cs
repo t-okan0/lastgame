@@ -11,7 +11,7 @@ public class itemmanager : MonoBehaviour
     }
     public void GetItem()
     {
-        gm.AddScore();
+        GameManager.instance.AddScore();
         Destroy(this.gameObject);
     }
 }
